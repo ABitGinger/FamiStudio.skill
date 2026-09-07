@@ -7,7 +7,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$InputFile,
     [Parameter(Mandatory=$true)][string]$OutputFile,
-    [string]$FamiStudio = "C:\Program Files\FamiStudio\FamiStudio.exe",
+    [string]$FamiStudio = "",       # empty = FAMISTUDIO_EXE env, then standard locations
     [double]$ExpectedSeconds = 0,   # if > 0, fail when |actual-expected| > Tolerance
     [double]$Tolerance = 0.02,
     [switch]$Play,
@@ -17,7 +17,19 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-if (-not (Test-Path $FamiStudio)) { Write-Error "FamiStudio not found: $FamiStudio"; exit 1 }
+if (-not $FamiStudio) { $FamiStudio = $env:FAMISTUDIO_EXE }
+if (-not $FamiStudio) {
+    $candidates = @(
+        (Join-Path ${env:ProgramFiles} "FamiStudio\FamiStudio.exe"),
+        (Join-Path ${env:ProgramFiles(x86)} "FamiStudio\FamiStudio.exe"),
+        (Join-Path ${env:LOCALAPPDATA} "Programs\FamiStudio\FamiStudio.exe")
+    ) | Where-Object { $_ -and (Test-Path $_) }
+    if ($candidates) { $FamiStudio = @($candidates)[0] }   # @(): single hit arrives unwrapped, [0] would be its first char
+}
+if (-not $FamiStudio -or -not (Test-Path $FamiStudio)) {
+    Write-Error "FamiStudio.exe not found. Set -FamiStudio <path> or the FAMISTUDIO_EXE environment variable."
+    exit 1
+}
 if (-not (Test-Path $InputFile))  { Write-Error "Input not found: $InputFile"; exit 1 }
 
 $in  = (Resolve-Path $InputFile).Path

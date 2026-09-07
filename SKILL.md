@@ -2,7 +2,7 @@
 name: famistudio
 description: >-
   Compose, edit, and render NES/Famicom chiptune music with the locally installed
-  FamiStudio 4.5.3 (C:\Program Files\FamiStudio). Use whenever the user wants to
+  FamiStudio (4.5.x). Use whenever the user wants to
   编曲/作曲/写旋律/做一段音乐/来段8-bit, create or edit any FamiStudio project
   (.fms / .txt), convert FamiTracker/NSF material, or export/render to
   WAV/MP3/OGG/NSF/NES ROM — even if they don't say the word "FamiStudio"
@@ -15,13 +15,18 @@ description: >-
 编曲全靠写文本工程文件。完整格式规范（全部实测/示例验证）在 `references/format.md`，
 动笔前先读它；下面的速查只够最小改动。
 
-## 环境事实（本机）
+## 环境要求
 
-- 可执行文件：`C:\Program Files\FamiStudio\FamiStudio.exe`（4.5.3）
+- 需要 [FamiStudio](https://famistudio.org/) 桌面版 **4.5.x**（文本格式与 4.5.3 实测结论匹配）。
+- **定位可执行文件**，按序尝试，找到即用：
+  1. 环境变量 `FAMISTUDIO_EXE`（render.ps1 也认它）；
+  2. Windows 默认 `C:\Program Files\FamiStudio\FamiStudio.exe`；
+  3. `where.exe FamiStudio.exe` / 常见自定义安装盘符；
+  4. 问用户要路径。
 - **`.fms` 是二进制；文本工程是 `.txt`**——GUI 两种都能打开编辑
-- 自带示例（二进制）：`C:\Program Files\FamiStudio\Demo Songs\`
-- Git Bash 直接调用会等待；**PowerShell 里必须 `Start-Process -Wait`**（GUI 子系统程序，
-  `&` 不等待且 `$LASTEXITCODE` 恒空）
+- 学习语法的素材：`<安装目录>/Demo Songs/`（二进制示例曲）
+- Windows 下 Git Bash 直接调用会等待；**PowerShell 里必须 `Start-Process -Wait`**（GUI 子系统
+  程序，`&` 不等待且 `$LASTEXITCODE` 恒空）
 
 ## 标准工作流
 
@@ -36,10 +41,10 @@ description: >-
 
    `-ExpectedSeconds` = 总帧数 ÷ 60。报 DURATION MISMATCH 说明 Time/Duration 单位或音符数学错了；
    这是必设的闸门，不要跳过。
-3. **交付**：`-Play` 播放一次；再打开 GUI 给用户看/继续编辑：
+3. **交付**：`-Play` 播放一次；再打开 GUI 给用户看/继续编辑（Windows 示例，路径按上面定位结果替换）：
 
    ```bash
-   powershell -NoProfile -Command "Start-Process 'C:\Program Files\FamiStudio\FamiStudio.exe' '<工程路径>'"
+   powershell -NoProfile -Command "Start-Process '<FamiStudio.exe 路径>' '<工程路径>'"
    ```
 
 ## 修改已有二进制工程

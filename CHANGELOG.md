@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 — 2026-09-05
+
+- 发布准备：SKILL.md 去本机化——安装路径改为"定位流程"（`FAMISTUDIO_EXE` 环境变量 →
+  标准位置探测 → 询问用户），不再写死本机路径
+- `render.ps1`：支持 `FAMISTUDIO_EXE` 环境变量与标准位置自动探测
+- 许可：MIT → **GPL-3.0**
+
 ## 1.2 — 2026-09-05
 
 - 新增 MIDI 转写：`assets/midi2fms.py`（2A03+VRC6+S5B+N163 声道池、GM 鼓组映射、
